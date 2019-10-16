@@ -2,6 +2,8 @@
 // For full license & permission details, see LICENSE.markdown.
 
 
+// MARK: - Node
+
 class Node<Value> {
     
     var value: Value
@@ -33,6 +35,8 @@ example(of: "Linked list") {
     print(node1)
 }
 
+// MARK: - Link
+
 struct LinkedList<Value> {
     var head: Node<Value>?
     var tail: Node<Value>?
@@ -46,6 +50,7 @@ struct LinkedList<Value> {
 }
 
 // Adding valur to list
+
 extension LinkedList {
     
     // O(1)
