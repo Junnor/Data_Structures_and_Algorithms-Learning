@@ -45,9 +45,10 @@ struct LinkedList<Value> {
     }
 }
 
-// add
+// Adding valur to list
 extension LinkedList {
     
+    // O(1)
     mutating func push(_ value: Value) {
         head = Node(value: value, next: head)
         if tail == nil {
@@ -55,6 +56,7 @@ extension LinkedList {
         }
     }
     
+    // O(1)
     mutating func append(_ value: Value) {
         guard !isEmpty else {
             push(value)
@@ -64,6 +66,7 @@ extension LinkedList {
         tail = tail?.next
     }
     
+    // O(n)
     func node(at index: Int) -> Node<Value>? {
         var current = head
         var currentIndex = 0
@@ -74,6 +77,15 @@ extension LinkedList {
         return current
     }
     
+    // O(1)
+    @discardableResult mutating func insert(_ value: Value, after node: Node<Value>) -> Node<Value> {
+        guard tail !== node else {
+            append(value)
+            return tail!
+        }
+        node.next = Node(value: value, next: node.next)
+        return node.next!
+    }
 }
 
 extension LinkedList: CustomStringConvertible {
@@ -99,4 +111,18 @@ example(of: "append") {
     list.append(2)
     list.append(3)
     print(list)
+}
+
+example(of: "insert at a particular index") {
+    var list = LinkedList<Int>()
+    list.append(1)
+    list.append(2)
+    list.append(3)
+    print("before insert: \(list)")
+    let middleNode = list.node(at: 1)!
+    for _ in 1...4 {
+        list.insert(10, after: middleNode)
+    }
+    print("after insert: \(list)")
+
 }
