@@ -49,6 +49,15 @@ struct LinkedList<Value> {
     }
 }
 
+extension LinkedList: CustomStringConvertible {
+    var description: String {
+        guard let head = head else {
+            return "Empty list"
+        }
+        return String(describing: head)
+    }
+}
+
 // Adding valur to list
 
 extension LinkedList {
@@ -93,14 +102,58 @@ extension LinkedList {
     }
 }
 
-extension LinkedList: CustomStringConvertible {
-    var description: String {
-        guard let head = head else {
-            return "Empty list"
+// Removing values
+extension LinkedList {
+    
+    // O(1) 考虑边界问题
+    @discardableResult mutating func pop() -> Value? {
+        defer {
+            head = head?.next
+            if isEmpty {
+                tail = nil
+            }
         }
-        return String(describing: head)
+        return head?.value
     }
+    
+    // O(n)
+    @discardableResult mutating func removeLast() -> Value? {
+        guard let head = head else {
+            return nil
+        }
+        guard head.next != nil else {
+            return pop()
+        }
+        
+        // Need know last and second last, so need to references
+        var prev = head
+        var current = head
+        
+        while let next = current.next {
+            prev = current
+            current = next
+        }
+        
+        prev.next = nil
+        tail = prev
+        
+        return current.value
+    }
+    
+    // O(1)
+    @discardableResult mutating func remove(after node: Node<Value>) -> Value? {
+        defer {
+            if node.next === tail {
+                tail = node
+            }
+            node.next = node.next?.next
+        }
+
+        return node.next?.value
+    }
+        
 }
+
 
 example(of: "push") {
     var list = LinkedList<Int>()
@@ -129,5 +182,49 @@ example(of: "insert at a particular index") {
         list.insert(10, after: middleNode)
     }
     print("after insert: \(list)")
+
+}
+
+example(of: "pop") {
+    var list = LinkedList<Int>()
+    list.push(3)
+    list.push(2)
+    list.push(1)
+    print("before pop: \(list)")
+    let popedValue = list.pop()
+    print("after pop: \(list)")
+    print("poped value: \(String(describing: popedValue))")
+
+}
+
+
+example(of: "remove last") {
+    var list = LinkedList<Int>()
+    list.push(3)
+    list.push(2)
+    list.push(1)
+    print("before remove last: \(list)")
+    let lastValue = list.removeLast()
+    print("after pop: \(list)")
+    print("last remove last: \(String(describing: lastValue))")
+
+}
+
+example(of: "remove node at a particular index") {
+    var list = LinkedList<Int>()
+    list.append(1)
+    list.append(2)
+    list.append(3)
+    list.append(4)
+    list.append(5)
+    print("before remove: \(list)")
+    
+    let index = 1
+    let node = list.node(at: index)!
+    let removedNode = list.remove(after: node)
+
+    print("after remove: \(list)")
+    print("removed node: \(String(describing: removedNode))")
+
 
 }
